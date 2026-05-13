@@ -1,0 +1,21 @@
+{
+  "namespace": "org.softwarecave.common.avro",
+  "name": "AssetEvent",
+  "type": "record",
+  "fields": [
+    {
+      "name": "asset",
+      "type": "org.softwarecave.common.avro.Asset",
+      "doc": "Asset which has been changed"
+    },
+    {
+      "name": "action",
+      "type": {
+        "type": "enum",
+        "name": "AssetAction",
+        "symbols": ["ADD", "REMOVE"]
+      },
+      "doc": "Action which occurred on the asset"
+    }
+  ]
+}

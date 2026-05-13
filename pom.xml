@@ -18,6 +18,7 @@
 
     <modules>
         <module>springjpa</module>
+        <module>common</module>
     </modules>
 
 </project>

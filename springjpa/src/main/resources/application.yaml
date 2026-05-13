@@ -1,3 +1,67 @@
 spring:
   application:
     name: springjpa
+  datasource:
+    url: jdbc:h2:mem:mydb
+    username: sa
+    password: password
+    driverClassName: org.h2.Driver
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+  h2:
+    console:
+      enabled: true
+  jmx:
+    enabled: true
+
+  kafka:
+    producer:
+      bootstrap-servers: localhost:29092
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: io.confluent.kafka.serializers.KafkaAvroSerializer
+      properties:
+        enable.idempotence: true
+        compression.type: "snappy"
+        linger.ms: 5000
+        acks: "all"
+        batch.size: 8192
+        schema.registry.url: http://localhost:8081
+    consumer:
+      bootstrap-servers: localhost:29192, localhost:29292
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      auto-offset-reset: latest
+      group-id: springjpa
+      properties:
+        schema.registry.url: http://localhost:8081
+        specific.avro.reader: true
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    jmx:
+      exposure:
+        include: "*"
+    health:
+      show-details: always
+      show-components: always
+
+
+app:
+  asset:
+    kafka-publisher:
+      topic-name: asset.avro
+    incoming:
+      topic-name: incoming.asset.avro
+      name-format: "Incoming #%d"
+      description-format: "Incoming asset with random number #%d"
+
+
+
+logging:
+  level:
+    org:
+      softwarecave: DEBUG
