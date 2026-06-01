@@ -5,9 +5,12 @@ import lombok.extern.slf4j.Slf4j;
 import org.softwarecave.common.avro.AssetEvent;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.kafka.annotation.RetryableTopic;
+import org.springframework.messaging.handler.annotation.Header;
+import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
 import static org.softwarecave.springjpa.asset.messaging.KafkaConsumerConfig.ASSET_CONTAINER_FACTORY;
+import static org.softwarecave.springjpa.common.messaging.KafkaProperties.MESSAGE_ID;
 
 @Service
 @Slf4j
@@ -18,12 +21,11 @@ public class IncomingAssetConsumer {
 
     @KafkaListener(topics = "${app.asset.incoming.topic-name}",
             containerFactory = ASSET_CONTAINER_FACTORY)
-    public void consumeAsset(AssetEvent event) {
-        log.debug("Received incoming asset {}", event);
-        if (event.getAsset().getId().endsWith("5")) {
-            throw new NonRetryableException("Hardcoded not to try the assets with id ending with 5");
-        }
-        assetProcessor.handleIncomingAsset(event);
+    public void consumeAsset(@Payload AssetEvent event,
+                             @Header(MESSAGE_ID) String messageId) {
+        log.debug("Received incoming asset with messageId={} {}", messageId, event);
+
+        assetProcessor.handleIncomingAsset(event, messageId);
     }
 
 

@@ -82,8 +82,8 @@ public class AssetControllerTest {
     }
 
     private static List<Asset> createAssets(List<AssetClass> assetClasses) {
-        return List.of(new Asset("id1", "Google", "Google shares", assetClasses.getFirst()),
-                new Asset("id2", "Microsoft", "Microsoft bonds", assetClasses.getFirst()));
+        return List.of(new Asset("id1", "Google", "Google shares", assetClasses.getFirst(), List.of()),
+                new Asset("id2", "Microsoft", "Microsoft bonds", assetClasses.getFirst(), List.of()));
     }
 
     private static List<AssetClass> createAssetClasses() {

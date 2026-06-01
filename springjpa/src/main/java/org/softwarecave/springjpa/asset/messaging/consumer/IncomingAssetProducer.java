@@ -2,6 +2,7 @@ package org.softwarecave.springjpa.asset.messaging.consumer;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.softwarecave.common.avro.Asset;
 import org.softwarecave.common.avro.AssetAction;
 import org.softwarecave.common.avro.AssetEvent;
@@ -10,7 +11,11 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.nio.charset.StandardCharsets;
+import java.util.UUID;
 import java.util.random.RandomGeneratorFactory;
+
+import static org.softwarecave.springjpa.common.messaging.KafkaProperties.MESSAGE_ID;
 
 
 @Service
@@ -50,7 +55,10 @@ public class IncomingAssetProducer {
                 .setAction(AssetAction.ADD)
                 .build();
 
-        kafkaTemplate.send(topicName, assetEvent.getAsset().getId(), assetEvent);
+        var producerRecord = new ProducerRecord<>(topicName, assetEvent.getAsset().getId(), assetEvent);
+        producerRecord.headers().add(MESSAGE_ID, UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
+
+        kafkaTemplate.send(producerRecord);
         log.debug("Sent incoming asset {} to topic {}", assetEvent, topicName);
     }
 }

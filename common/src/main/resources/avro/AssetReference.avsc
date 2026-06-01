@@ -1,0 +1,22 @@
+{
+  "namespace": "org.softwarecave.common.avro",
+  "type": "record",
+  "name": "AssetReference",
+  "fields": [
+    {
+      "type": "string",
+      "name": "id",
+      "doc": "Identifier of the asset reference"
+    },
+    {
+      "type": "string",
+      "name": "name",
+      "doc": "Name of the asset reference"
+    },
+    {
+      "type": ["string", "null"],
+      "name": "value",
+      "doc": "Value of the asset reference"
+    }
+  ]
+}

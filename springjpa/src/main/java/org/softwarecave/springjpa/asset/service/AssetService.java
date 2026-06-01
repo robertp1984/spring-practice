@@ -5,7 +5,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.softwarecave.springjpa.asset.messaging.AssetKafkaPublisher;
 import org.softwarecave.springjpa.asset.model.Asset;
 import org.softwarecave.springjpa.asset.model.AssetShortRef;
-import org.softwarecave.springjpa.service.DataValidationException;
+import org.softwarecave.springjpa.reference.model.AssetReference;
+import org.softwarecave.springjpa.reference.service.AssetReferenceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,11 +19,24 @@ import java.util.Optional;
 public class AssetService {
 
     private final AssetRepository assetRepository;
+    private final AssetReferenceService assetReferenceService;
+
     private final AssetKafkaPublisher assetKafkaPublisher;
 
     public Asset addAsset(Asset asset) {
         validateNewAsset(asset);
         var savedAsset = assetRepository.save(asset);
+        assetKafkaPublisher.sendAdded(savedAsset);
+        return savedAsset;
+    }
+
+    public Asset addAssetWithReferences(Asset asset) {
+        validateNewAsset(asset);
+        var savedAsset = assetRepository.save(asset);
+
+        List<AssetReference> savedAssetReferences = assetReferenceService.saveAll(asset.getReferences());
+        savedAsset.setReferences(savedAssetReferences);
+
         assetKafkaPublisher.sendAdded(savedAsset);
         return savedAsset;
     }

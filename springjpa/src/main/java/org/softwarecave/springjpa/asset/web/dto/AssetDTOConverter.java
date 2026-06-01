@@ -24,6 +24,7 @@ public class AssetDTOConverter {
         AssetClassDTO assetClassDTO = assetDTO.assetClass();
         AssetClass assetClass = assetClassDTO != null ? assetClassDTOConverter.toEntity(assetClassDTO) : null;
 
-        return new Asset(assetDTO.id(), assetDTO.name(), assetDTO.description(), assetClass);
+        //TODO:
+        return new Asset(assetDTO.id(), assetDTO.name(), assetDTO.description(), assetClass, null);
     }
 }

@@ -17,6 +17,15 @@
       "type": "string",
       "name": "description",
       "doc": "Description of the asset"
+    },
+    {
+      "type": {
+        "type": "array",
+        "items": "org.softwarecave.common.avro.AssetReference"
+      },
+      "name": "references",
+      "doc": "References for the asset",
+      "default": []
     }
   ]
 }

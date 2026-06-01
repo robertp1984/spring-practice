@@ -9,7 +9,9 @@ import org.softwarecave.springjpa.asset.model.AssetClass;
 import org.softwarecave.springjpa.asset.service.AssetClassService;
 import org.softwarecave.springjpa.asset.service.AssetService;
 import org.softwarecave.springjpa.asset.service.AssetValidationException;
-import org.springframework.stereotype.Component;
+import org.softwarecave.springjpa.reference.model.AssetReference;
+import org.softwarecave.springjpa.reference.service.AssetReferenceRepository;
+import org.softwarecave.springjpa.reference.service.AssetReferenceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +25,17 @@ public class IncomingAssetProcessor {
     private final AssetAvroConverter assetAvroConverter;
     private final AssetService assetService;
     private final AssetClassService assetClassService;
+    private final AssetReferenceService assetReferenceService;
 
     @Transactional
-    public void handleIncomingAsset(AssetEvent event) {
+    public void handleIncomingAsset(AssetEvent event, String messageId) {
         validate(event);
+
+        Optional<AssetReference> existingAssetReference = assetReferenceService.findByNameAndValueString("IncomingMessageId", messageId);
+        if (existingAssetReference.isPresent()) {
+            log.info("Duplicated message found by messageId={}. Skipping the processing.", messageId);
+            return;
+        }
 
         Asset asset = assetAvroConverter.toAsset(event.getAsset());
         asset.setId(null);

@@ -1,5 +1,6 @@
 package org.softwarecave.springjpa.asset.service;
 
+import antlr.collections.impl.LList;
 import org.junit.jupiter.api.Test;
 import org.softwarecave.springjpa.asset.messaging.AssetKafkaPublisher;
 import org.softwarecave.springjpa.asset.model.Asset;
@@ -141,10 +142,11 @@ public class AssetServiceTest {
     private void createSampleAssets() {
         var externalAssetClass = assetClassService.add(new AssetClass(null, EXTERNAL, "External asset"));
         var internalAssetClass = assetClassService.add(new AssetClass(null, INTERNAL, "Internal asset"));
-        assetService.addAsset(new Asset(null, "Netflix", "Netflix shares D", externalAssetClass));
-        assetService.addAsset(new Asset(null, "HBO", "HBO shares C", externalAssetClass));
-        assetService.addAsset(new Asset(null, "Disney", "Disney shares A", internalAssetClass));
-        assetService.addAsset(new Asset(null, "CircleK", "CircleK shares B", internalAssetClass));
-        assetService.addAsset(new Asset(null, "HTC", "HTC shares A", externalAssetClass));
+
+        assetService.addAsset(new Asset(null, "Netflix", "Netflix shares D", externalAssetClass, List.of()));
+        assetService.addAsset(new Asset(null, "HBO", "HBO shares C", externalAssetClass, List.of()));
+        assetService.addAsset(new Asset(null, "Disney", "Disney shares A", internalAssetClass, List.of()));
+        assetService.addAsset(new Asset(null, "CircleK", "CircleK shares B", internalAssetClass, List.of()));
+        assetService.addAsset(new Asset(null, "HTC", "HTC shares A", externalAssetClass, List.of()));
     }
 }

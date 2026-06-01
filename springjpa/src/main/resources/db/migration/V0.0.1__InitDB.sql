@@ -27,3 +27,19 @@ CREATE TABLE client (
 );
 CREATE INDEX client_first_name_idx ON client(first_name);
 CREATE INDEX client_last_name_idx ON client(last_name);
+
+--- Reference
+CREATE TABLE reference (
+    id VARCHAR PRIMARY KEY,
+    name VARCHAR NOT NULL,
+    value_string VARCHAR,
+
+    dtype VARCHAR NOT NULL, -- for inheritance
+
+    asset_id VARCHAR REFERENCES asset(id),
+    CONSTRAINT reference_value_present CHECK(value_string IS NOT NULL)
+);
+CREATE INDEX reference_name_idx ON reference(name);
+CREATE INDEX reference_dtype_idx ON reference USING HASH(dtype);
+CREATE INDEX reference_asset_id_idx ON reference(asset_id);
+CREATE UNIQUE INDEX reference_lk_idx ON reference(asset_id, name);
