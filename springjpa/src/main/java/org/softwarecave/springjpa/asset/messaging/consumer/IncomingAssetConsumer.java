@@ -4,12 +4,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.softwarecave.common.avro.AssetEvent;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.kafka.annotation.RetryableTopic;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Service;
 
-import static org.softwarecave.springjpa.asset.messaging.KafkaConsumerConfig.ASSET_CONTAINER_FACTORY;
+import static org.softwarecave.springjpa.messaging.KafkaConsumerConfig.ASSET_CONTAINER_FACTORY;
 import static org.softwarecave.springjpa.common.messaging.KafkaProperties.MESSAGE_ID;
 
 @Service

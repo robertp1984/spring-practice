@@ -43,3 +43,11 @@ CREATE INDEX reference_name_idx ON reference(name);
 CREATE INDEX reference_dtype_idx ON reference USING HASH(dtype);
 CREATE INDEX reference_asset_id_idx ON reference(asset_id);
 CREATE UNIQUE INDEX reference_lk_idx ON reference(asset_id, name);
+
+---
+CREATE TABLE exactly_once_delivery_entry (
+    id VARCHAR PRIMARY KEY,
+    message_id VARCHAR NOT NULL,
+    type VARCHAR NOT NULL
+);
+CREATE UNIQUE INDEX exactly_once_delivery_entry_lk_idx ON exactly_once_delivery_entry USING HASH(message_id, type);
