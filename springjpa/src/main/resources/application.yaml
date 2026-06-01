@@ -29,7 +29,7 @@ spring:
     consumer:
       bootstrap-servers: localhost:29192, localhost:29292
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
-      value-deserializer: io.confluent.kafka.serializers.KafkaAvroDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       auto-offset-reset: latest
       group-id: springjpa
       properties:

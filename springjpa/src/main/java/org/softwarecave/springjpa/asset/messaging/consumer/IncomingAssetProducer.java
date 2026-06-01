@@ -45,7 +45,7 @@ public class IncomingAssetProducer {
                 .setAsset(Asset.newBuilder()
                         .setId(Integer.toHexString(number))
                         .setName(name)
-                        .setDescription(name)
+                        .setDescription(desc)
                         .build())
                 .setAction(AssetAction.ADD)
                 .build();
