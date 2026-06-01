@@ -21,4 +21,12 @@
         <module>common</module>
     </modules>
 
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub Packages</name>
+			<url>https://maven.pkg.github.com/robertp1984/spring-practice</url>
+		</repository>
+	</distributionManagement>
+
 </project>
