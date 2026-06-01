@@ -1,11 +1,11 @@
-package org.softwarecave.springjpa.asset.messaging;
+package org.softwarecave.springjpa.messaging;
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.softwarecave.common.avro.AssetEvent;
-import org.softwarecave.springjpa.asset.messaging.consumer.NonRetryableException;
-import org.softwarecave.springjpa.asset.messaging.consumer.RetryableException;
+import org.softwarecave.springjpa.messaging.consumer.NonRetryableException;
+import org.softwarecave.springjpa.messaging.consumer.RetryableException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,7 +16,6 @@ import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.kafka.listener.DeadLetterPublishingRecoverer;
 import org.springframework.kafka.listener.DefaultErrorHandler;
 import org.springframework.kafka.support.serializer.ErrorHandlingDeserializer;
-import org.springframework.util.backoff.BackOff;
 import org.springframework.util.backoff.FixedBackOff;
 
 import java.util.HashMap;
@@ -57,7 +56,7 @@ public class KafkaConsumerConfig {
                 new FixedBackOff(1000, 3));
         errorHandler.addRetryableExceptions(RetryableException.class);
         errorHandler.addNotRetryableExceptions(NonRetryableException.class);
-        //factory.setCommonErrorHandler(errorHandler);
+        factory.setCommonErrorHandler(errorHandler);
 
         return factory;
     }

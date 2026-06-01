@@ -1,4 +1,4 @@
-package org.softwarecave.springjpa.asset.messaging.consumer;
+package org.softwarecave.springjpa.messaging.consumer;
 
 public class RetryableException extends RuntimeException{
     public RetryableException(String message, Throwable cause) {
