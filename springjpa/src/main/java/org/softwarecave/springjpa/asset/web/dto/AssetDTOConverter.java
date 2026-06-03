@@ -6,25 +6,39 @@ import org.softwarecave.springjpa.asset.model.AssetClass;
 import org.softwarecave.springjpa.asset.service.AssetValidationException;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class AssetDTOConverter {
 
     private final AssetClassDTOConverter assetClassDTOConverter;
+    private final AssetReferenceDTOConverter assetReferenceDTOConverter;
 
     public AssetDTO convertToDto(Asset asset) {
+        var assetReferencesDTO = asset.getReferences().stream()
+                .map(r -> new AssetReferenceDTO(r.getId(), r.getName(), r.getValueString()))
+                .toList();
         return new AssetDTO(asset.getId(), asset.getName(), asset.getDescription(),
-                assetClassDTOConverter.convertToDto(asset.getAssetClass()));
+                assetClassDTOConverter.convertToDto(asset.getAssetClass()), assetReferencesDTO);
     }
 
     public Asset convertToEntity(AssetDTO assetDTO) {
         if (assetDTO == null) {
             throw new AssetValidationException("AssetDTO must not be null");
         }
+
         AssetClassDTO assetClassDTO = assetDTO.assetClass();
         AssetClass assetClass = assetClassDTO != null ? assetClassDTOConverter.toEntity(assetClassDTO) : null;
 
-        //TODO:
-        return new Asset(assetDTO.id(), assetDTO.name(), assetDTO.description(), assetClass, null);
+        var asset = new Asset(assetDTO.id(), assetDTO.name(), assetDTO.description(), assetClass, List.of());
+
+        var assetReferencesDTO = assetDTO.references();
+        var assetReferences = assetReferencesDTO.stream()
+                .map(r -> assetReferenceDTOConverter.toEntity(r, asset))
+                .toList();
+        asset.setReferences(assetReferences);
+
+        return asset;
     }
 }

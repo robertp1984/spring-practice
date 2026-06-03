@@ -1,6 +1,7 @@
 package org.softwarecave.springjpa.messaging;
 
 import io.confluent.kafka.serializers.KafkaAvroDeserializer;
+import org.apache.avro.specific.SpecificRecord;
 import org.apache.kafka.clients.consumer.ConsumerConfig;
 import org.apache.kafka.common.serialization.StringDeserializer;
 import org.softwarecave.common.avro.AssetEvent;
@@ -26,10 +27,11 @@ public class KafkaConsumerConfig {
     public static final String ASSET_CONTAINER_FACTORY = "assetContainerFactory";
 
     @Bean
-    public ConsumerFactory<String, AssetEvent> consumerFactory(
+    public ConsumerFactory<String, SpecificRecord> consumerFactory(
             @Value("${spring.kafka.consumer.bootstrap-servers}") String bootstrapServers,
             @Value("${spring.kafka.consumer.group-id}") String groupId,
-            @Value("${spring.kafka.consumer.properties.schema.registry.url}") String schemaRegistryUrl
+            @Value("${spring.kafka.consumer.properties.schema.registry.url}") String schemaRegistryUrl,
+            @Value("${spring.kafka.consumer.properties.isolation.level}") String isolationLevel
     ) {
         var config = new HashMap<String, Object>();
         config.put(ConsumerConfig.BOOTSTRAP_SERVERS_CONFIG, bootstrapServers);
@@ -41,14 +43,15 @@ public class KafkaConsumerConfig {
         config.put(ConsumerConfig.GROUP_ID_CONFIG, groupId);
         config.put("schema.registry.url", schemaRegistryUrl);
         config.put("specific.avro.reader", "true");
+        config.put(ConsumerConfig.ISOLATION_LEVEL_CONFIG, isolationLevel);
 
         return new DefaultKafkaConsumerFactory<>(config);
     }
 
     @Bean
-    public ConcurrentKafkaListenerContainerFactory<String, AssetEvent> assetContainerFactory(ConsumerFactory<String, AssetEvent> consumerFactory,
+    public ConcurrentKafkaListenerContainerFactory<String, SpecificRecord> assetContainerFactory(ConsumerFactory<String, SpecificRecord> consumerFactory,
                                                                                              KafkaTemplate<String, Object> kafkaTemplate) {
-        var factory = new ConcurrentKafkaListenerContainerFactory<String, AssetEvent>();
+        var factory = new ConcurrentKafkaListenerContainerFactory<String, SpecificRecord>();
         factory.setConsumerFactory(consumerFactory);
 
         // default error handler sending unprocessable messages to DLT

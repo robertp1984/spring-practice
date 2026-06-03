@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(value = "transactionManager")
 @RequiredArgsConstructor
 public class AssetService {
 
@@ -41,7 +41,7 @@ public class AssetService {
         return savedAsset;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public Asset findById(String id) {
         validateAssetId(id);
         return assetRepository.findById(id)
@@ -54,24 +54,24 @@ public class AssetService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public List<Asset> findByNameOrDescriptionLike(String likeExpr) {
         return assetRepository.findByNameLikeOrDescriptionLike(likeExpr, likeExpr);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public Optional<Asset> findByName(String name) {
         validateAssetName(name);
         return assetRepository.findByName(name);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public List<Asset> findByAssetClassName(String assetClassName) {
         validateAssetClassName(assetClassName);
         return assetRepository.findByAssetClassName(assetClassName);
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public List<AssetShortRef> findShortRefByAssetClassName(String assetClassName) {
         validateAssetClassName(assetClassName);
         return assetRepository.findShortRefByAssetClassName(assetClassName);
@@ -95,7 +95,7 @@ public class AssetService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public List<Asset> findFiltered(String name, String assetClassName) {
         if (!StringUtils.isBlank(name)) {
             return findByName(name).stream().toList();

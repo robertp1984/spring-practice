@@ -26,6 +26,7 @@ spring:
         acks: "all"
         batch.size: 8192
         schema.registry.url: http://localhost:8081
+      transaction-id-prefix: spring-practice-tx-${random.uuid}
     consumer:
       bootstrap-servers: localhost:29192, localhost:29292
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
@@ -35,6 +36,7 @@ spring:
       properties:
         schema.registry.url: http://localhost:8081
         specific.avro.reader: true
+        isolation.level: read_committed
 
 
 management:
@@ -64,4 +66,21 @@ app:
 logging:
   level:
     org:
-      softwarecave: DEBUG
+      softwarecave: trace
+      springframework:
+        kafka:
+          transaction: debug
+        transaction: debug
+        orm:
+          jpa:
+            JpaTransactionManager: debug
+      apache:
+        kafka:
+          clients:
+            producer:
+              internals:
+                TransactionManager: debug
+
+
+
+

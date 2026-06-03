@@ -18,4 +18,10 @@ public class AssetReference extends Reference {
     @ManyToOne
     @JoinColumn(name = "asset_id")
     private Asset asset;
+
+    public AssetReference(String id, String name, String valueString, Asset asset) {
+        super(id, name, valueString);
+        this.asset = asset;
+    }
+
 }

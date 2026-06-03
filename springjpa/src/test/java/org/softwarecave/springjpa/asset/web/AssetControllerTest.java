@@ -7,6 +7,7 @@ import org.softwarecave.springjpa.asset.service.AssetService;
 import org.softwarecave.springjpa.asset.web.dto.AssetClassDTOConverter;
 import org.softwarecave.springjpa.asset.web.dto.AssetDTO;
 import org.softwarecave.springjpa.asset.web.dto.AssetDTOConverter;
+import org.softwarecave.springjpa.asset.web.dto.AssetReferenceDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -57,7 +58,7 @@ public class AssetControllerTest {
     }
 
     private AssetDTO convertEntityToDTO(Asset asset) {
-        AssetDTOConverter converter = new AssetDTOConverter(new AssetClassDTOConverter());
+        AssetDTOConverter converter = new AssetDTOConverter(new AssetClassDTOConverter(), new AssetReferenceDTOConverter());
         return converter.convertToDto(asset);
     }
 
