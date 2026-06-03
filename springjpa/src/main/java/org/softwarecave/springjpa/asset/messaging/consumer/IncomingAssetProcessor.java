@@ -52,7 +52,7 @@ public class IncomingAssetProcessor {
         log.debug("Saved new asset {} into database", asset);
     }
 
-    private @NonNull Asset saveAsset(AssetEvent event, String messageId) {
+    private Asset saveAsset(AssetEvent event, String messageId) {
         Asset asset = assetAvroConverter.toAsset(event.getAsset());
         asset.setId(null);
 
