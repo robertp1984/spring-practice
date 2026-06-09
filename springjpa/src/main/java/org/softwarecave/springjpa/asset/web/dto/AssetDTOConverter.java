@@ -1,6 +1,7 @@
 package org.softwarecave.springjpa.asset.web.dto;
 
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.StringUtils;
 import org.softwarecave.springjpa.asset.model.Asset;
 import org.softwarecave.springjpa.asset.model.AssetClass;
 import org.softwarecave.springjpa.asset.service.AssetValidationException;
@@ -26,6 +27,12 @@ public class AssetDTOConverter {
     public Asset convertToEntity(AssetDTO assetDTO) {
         if (assetDTO == null) {
             throw new AssetValidationException("AssetDTO must not be null");
+        }
+        if (StringUtils.isBlank(assetDTO.name())) {
+            throw new AssetValidationException("Name of the asset must not be null");
+        }
+        if (StringUtils.isBlank(assetDTO.description())) {
+            throw new AssetValidationException("Description of the asset must not be null");
         }
 
         AssetClassDTO assetClassDTO = assetDTO.assetClass();

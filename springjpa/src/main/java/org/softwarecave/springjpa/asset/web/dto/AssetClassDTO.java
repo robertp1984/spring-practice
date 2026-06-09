@@ -1,4 +1,8 @@
 package org.softwarecave.springjpa.asset.web.dto;
 
-public record AssetClassDTO(String id, String name, String description) {
+import jakarta.validation.constraints.NotBlank;
+
+public record AssetClassDTO(String id,
+                            @NotBlank String name,
+                            @NotBlank String description) {
 }

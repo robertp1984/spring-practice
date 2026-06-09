@@ -1,6 +1,7 @@
 package org.softwarecave.springjpa.reference.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,7 @@ public class AssetReference extends Reference {
 
     @ManyToOne
     @JoinColumn(name = "asset_id")
+    @NotNull
     private Asset asset;
 
     public AssetReference(String id, String name, String valueString, Asset asset) {

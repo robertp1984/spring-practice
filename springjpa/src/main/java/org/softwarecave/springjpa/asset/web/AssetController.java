@@ -1,5 +1,6 @@
 package org.softwarecave.springjpa.asset.web;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.softwarecave.springjpa.asset.model.Asset;
 import org.softwarecave.springjpa.asset.service.AssetService;
@@ -35,7 +36,7 @@ public class AssetController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addAsset(@RequestBody AssetDTO assetDTO) {
+    public ResponseEntity<String> addAsset(@RequestBody @Valid AssetDTO assetDTO) {
         var asset = assetDTOConverter.convertToEntity(assetDTO);
 
         var savedAsset = assetService.addAsset(asset);

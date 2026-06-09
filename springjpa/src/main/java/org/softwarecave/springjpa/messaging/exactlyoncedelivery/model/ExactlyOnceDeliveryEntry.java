@@ -6,6 +6,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,9 +25,11 @@ public class ExactlyOnceDeliveryEntry {
     private String id;
 
     @Column(name = "message_id")
+    @NotBlank
     private String messageId;
 
     @Column(name = "type")
+    @NotBlank
     private String type;
 
     public ExactlyOnceDeliveryEntry(String messageId, String type) {
