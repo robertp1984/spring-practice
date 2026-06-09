@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(value = "transactionManager")
 @RequiredArgsConstructor
 public class AssetReferenceService {
 

@@ -10,6 +10,7 @@ import org.softwarecave.springjpa.asset.service.AssetClassService;
 import org.softwarecave.springjpa.asset.service.AssetService;
 import org.softwarecave.springjpa.asset.service.AssetValidationException;
 import org.softwarecave.springjpa.messaging.exactlyoncedelivery.service.ExactlyOnceDeliveryService;
+import org.softwarecave.springjpa.reference.model.AssetReference;
 import org.softwarecave.springjpa.reference.service.AssetReferenceService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,7 +28,7 @@ public class IncomingAssetProcessor {
     private final AssetReferenceService assetReferenceService;
     private final ExactlyOnceDeliveryService exactlyOnceDeliveryService;
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void handleIncomingAsset(AssetEvent event, String messageId) {
         validate(event);
 
@@ -37,19 +38,33 @@ public class IncomingAssetProcessor {
             return;
         }
 
+        Asset asset;
+        try {
+            asset = saveAsset(event, messageId);
+        } catch (Exception e) {
+            log.error("Failed to save the asset into database", e);
+            throw e;
+        }
+
+        // final check for duplicates with throwing
+        exactlyOnceDeliveryService.registerWithCheck(messageId, "asset");
+
+        log.debug("Saved new asset {} into database", asset);
+    }
+
+    private Asset saveAsset(AssetEvent event, String messageId) {
         Asset asset = assetAvroConverter.toAsset(event.getAsset());
         asset.setId(null);
 
         AssetClass assetClass = getAssetClass(asset);
         asset.setAssetClass(assetClass);
 
+        asset.getReferences().add(new AssetReference(null, "incomingAssetId", messageId, asset));
+
         log.debug("Saving new asset {} into database", asset);
-        assetService.addAsset(asset);
+        assetService.addAssetWithReferences(asset);
 
-        // final check for duplicates with throwing
-        exactlyOnceDeliveryService.registerWithCheck(messageId, "asset");
-
-        log.debug("Saved new asset {} into database", asset);
+        return asset;
     }
 
     private AssetClass getAssetClass(Asset asset) {

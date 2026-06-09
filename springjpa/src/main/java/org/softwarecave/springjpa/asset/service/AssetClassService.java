@@ -9,7 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Optional;
 
 @Service
-@Transactional
+@Transactional(value = "transactionManager")
 public class AssetClassService {
 
     private final AssetClassRepository assetClassRepository;
@@ -26,7 +26,7 @@ public class AssetClassService {
         }
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public Optional<AssetClass> findByNameOptional(String name) {
         if (name != null) {
             return assetClassRepository.findByName(name);
@@ -36,7 +36,7 @@ public class AssetClassService {
 
     }
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public AssetClass findByName(String name) {
         return findByNameOptional(name)
                 .orElseThrow(() -> new NoSuchAssetClassException("Asset class %s not found".formatted(name)));

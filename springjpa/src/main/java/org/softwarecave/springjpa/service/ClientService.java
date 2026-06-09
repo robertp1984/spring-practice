@@ -8,7 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional
+@Transactional(value = "transactionManager")
 public class ClientService {
 
     private ClientRepository clientRepository;

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.nio.charset.StandardCharsets;
 import java.util.UUID;
@@ -40,6 +41,7 @@ public class IncomingAssetProducer {
     }
 
     @Scheduled(initialDelay = 10000, fixedRate = 5000)
+    @Transactional(value = "transactionManager")
     public void generateNewAsset() {
         var rand = RandomGeneratorFactory.getDefault().create();
 

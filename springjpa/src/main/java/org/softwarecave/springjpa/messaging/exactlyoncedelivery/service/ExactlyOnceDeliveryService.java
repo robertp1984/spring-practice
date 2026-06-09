@@ -15,7 +15,7 @@ public class ExactlyOnceDeliveryService {
 
     private final ExactlyOnceDeliveryEntryRepository exactlyOnceDeliveryEntryRepository;
 
-    @Transactional(readOnly = true)
+    @Transactional(readOnly = true, value = "transactionManager")
     public boolean isDuplicate(String messageId, String type) {
         var existingEntry = exactlyOnceDeliveryEntryRepository.findByMessageIdAndType(messageId, type);
         return existingEntry.isPresent();
@@ -25,7 +25,7 @@ public class ExactlyOnceDeliveryService {
         exactlyOnceDeliveryEntryRepository.save(new ExactlyOnceDeliveryEntry(messageId, type));
     }
 
-    @Transactional
+    @Transactional(value = "transactionManager")
     public void registerWithCheck(String messageId, String type) {
         try {
             register(messageId, type);
