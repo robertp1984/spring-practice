@@ -1,0 +1,38 @@
+# Makes the application available under URLs: https://springjpa.127.0.0.1.nip.io and https://localhost/springjpa
+# Remember to use minikube tunnel if running on Windows
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: main-ingress
+  namespace: spring-practice
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /
+spec:
+  tls:
+    - hosts:
+        - localhost
+        - springjpa.127.0.0.1.nip.io
+      secretName: ingress-tls
+  ingressClassName: nginx
+  rules:
+    - host: localhost
+      http:
+        paths:
+          - path: /springjpa(/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: springjpa
+                port:
+                  number: 8080
+    - host: springjpa.127.0.0.1.nip.io
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: springjpa
+                port:
+                  number: 8080

@@ -156,5 +156,26 @@ services:
       CONNECT_VALUE_CONVERTER_SCHEMA_REGISTRY_URL: http://schema-registry:8081
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components,/kafka-connect-plugins"
 
+  springjpa:
+    build:
+      context: ./springjpa
+      tags:
+        - springjpa:0.0.1
+        - robertp22/springjpa:0.0.1
+    hostname: springjpa
+    restart: no
+    depends_on:
+      - kafka1
+      - kafka2
+      - kafka3
+      - schema-registry
+    ports:
+      - "8080:8080"
+    environment:
+      - SPRING_KAFKA_PRODUCER_BOOTSTRAP_SERVERS=kafka1:29092
+      - SPRING_KAFKA_PRODUCER_PROPERTIES_SCHEMA_REGISTRY_URL=http://schema-registry:8081
+      - SPRING_KAFKA_CONSUMER_BOOTSTRAP_SERVERS=kafka1:29092
+      - SPRING_KAFKA_CONSUMER_PROPERTIES_SCHEMA_REGISTRY_URL=http://schema-registry:8081
+
 volumes:
   data-postgresql:
