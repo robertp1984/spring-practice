@@ -19,6 +19,7 @@ kubectl apply -f schema-registry.yaml
 # App
 kns spring-practice
 kubectl apply -f springjpa.yaml
+kubectl apply -f chat.yaml
 
 # Ingress
 kns spring-practice
