@@ -19,6 +19,8 @@ kubectl apply -f schema-registry.yaml
 # App
 kns spring-practice
 kubectl apply -f springjpa.yaml
+
+kubectl create secret generic openai-api-key --from-literal=OPENAI_API_KEY=${OPENAI_API_KEY}
 kubectl apply -f chat.yaml
 
 # Ingress
