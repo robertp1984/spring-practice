@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.softwarecave.springjpa.asset.model.Asset;
 
+import java.util.UUID;
+
 @Entity
 @DiscriminatorValue("assetref")
 @Getter
@@ -21,7 +23,7 @@ public class AssetReference extends Reference {
     @NotNull
     private Asset asset;
 
-    public AssetReference(String id, String name, String valueString, Asset asset) {
+    public AssetReference(UUID id, String name, String valueString, Asset asset) {
         super(id, name, valueString);
         this.asset = asset;
     }

@@ -29,7 +29,7 @@ public class AssetKafkaPublisher {
     public void sendAdded(Asset asset) {
         AssetEvent event = assetAvroConverter.toAssetAvro(asset);
         log.info("Sending the event {} to topic {}", event, topicName);
-        var future = kafkaTemplate.send(topicName, event.getAsset().getId(), event);
+        var future = kafkaTemplate.send(topicName, event.getAsset().getId().toString(), event);
         future.whenComplete((result, throwable) -> {
             if (throwable != null) {
                 RecordMetadata recordMetadata = result.getRecordMetadata();

@@ -50,14 +50,14 @@ public class IncomingAssetProducer {
         String desc = descriptionFormat.formatted(number);
         var assetEvent = AssetEvent.newBuilder()
                 .setAsset(Asset.newBuilder()
-                        .setId(Integer.toHexString(number))
+                        .setId(UUID.randomUUID())
                         .setName(name)
                         .setDescription(desc)
                         .build())
                 .setAction(AssetAction.ADD)
                 .build();
 
-        var producerRecord = new ProducerRecord<>(topicName, assetEvent.getAsset().getId(), assetEvent);
+        var producerRecord = new ProducerRecord<>(topicName, assetEvent.getAsset().getId().toString(), assetEvent);
         producerRecord.headers().add(MESSAGE_ID, UUID.randomUUID().toString().getBytes(StandardCharsets.UTF_8));
 
         kafkaTemplate.send(producerRecord);

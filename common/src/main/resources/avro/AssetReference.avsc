@@ -4,7 +4,10 @@
   "name": "AssetReference",
   "fields": [
     {
-      "type": "string",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      },
       "name": "id",
       "doc": "Identifier of the asset reference"
     },
@@ -14,7 +17,10 @@
       "doc": "Name of the asset reference"
     },
     {
-      "type": ["string", "null"],
+      "type": [
+        "string",
+        "null"
+      ],
       "name": "value",
       "doc": "Value of the asset reference"
     }
