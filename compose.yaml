@@ -185,7 +185,7 @@ services:
     hostname: chat
     restart: no
     ports:
-      - "8080:8081"
+      - "8090:8080"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
 
