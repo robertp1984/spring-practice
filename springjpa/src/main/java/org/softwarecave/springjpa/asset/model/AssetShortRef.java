@@ -1,5 +1,7 @@
 package org.softwarecave.springjpa.asset.model;
 
-public record AssetShortRef(String id, String name) {
+import java.util.UUID;
+
+public record AssetShortRef(UUID id, String name) {
 
 }

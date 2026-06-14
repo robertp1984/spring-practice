@@ -7,6 +7,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.UUID;
+
 @Entity
 @Table( name = "reference")
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
@@ -19,7 +21,7 @@ public abstract class Reference {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(name = "name")
     @NotBlank

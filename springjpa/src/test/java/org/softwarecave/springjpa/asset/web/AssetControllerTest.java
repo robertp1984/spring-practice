@@ -14,10 +14,9 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.util.List;
+import java.util.UUID;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.ArgumentMatchers.isNull;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -28,6 +27,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public class AssetControllerTest {
 
     private static final String EXTERNAL = "ext";
+    public static final UUID UUID_1 = UUID.randomUUID();
+    public static final UUID UUID_2 = UUID.randomUUID();
+    public static final UUID UUID_3 = UUID.randomUUID();
 
     @MockitoBean
     private AssetService assetService;
@@ -50,7 +52,7 @@ public class AssetControllerTest {
         mockMvc.perform(get("/api/v1/assets")
                         .queryParam("name", "Google"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("id1"))
+                .andExpect(jsonPath("$[0].id").value(UUID_1.toString()))
                 .andExpect(jsonPath("$[0].name").value("Google"))
                 .andExpect(jsonPath("$[0].description").value("Google shares"));
 
@@ -74,7 +76,7 @@ public class AssetControllerTest {
         mockMvc.perform(get("/api/v1/assets")
                         .queryParam("assetClassName", "Microsoft"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value("id2"))
+                .andExpect(jsonPath("$[0].id").value(UUID_2.toString()))
                 .andExpect(jsonPath("$[0].name").value("Microsoft"))
                 .andExpect(jsonPath("$[0].description").value("Microsoft bonds"))
                 .andExpect(jsonPath("$[0].assetClass.name").value(EXTERNAL));
@@ -83,11 +85,11 @@ public class AssetControllerTest {
     }
 
     private static List<Asset> createAssets(List<AssetClass> assetClasses) {
-        return List.of(new Asset("id1", "Google", "Google shares", assetClasses.getFirst(), List.of()),
-                new Asset("id2", "Microsoft", "Microsoft bonds", assetClasses.getFirst(), List.of()));
+        return List.of(new Asset(UUID_1, "Google", "Google shares", assetClasses.getFirst(), List.of()),
+                new Asset(UUID_2, "Microsoft", "Microsoft bonds", assetClasses.getFirst(), List.of()));
     }
 
     private static List<AssetClass> createAssetClasses() {
-        return List.of(new AssetClass("id3", EXTERNAL, "desc"));
+        return List.of(new AssetClass(UUID_3, EXTERNAL, "desc"));
     }
 }

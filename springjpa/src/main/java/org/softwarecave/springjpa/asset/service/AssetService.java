@@ -12,6 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @Transactional(value = "transactionManager")
@@ -42,13 +43,13 @@ public class AssetService {
     }
 
     @Transactional(readOnly = true, value = "transactionManager")
-    public Asset findById(String id) {
+    public Asset findById(UUID id) {
         validateAssetId(id);
         return assetRepository.findById(id)
                 .orElseThrow(() -> new NoSuchAssetException("Asset with id %s was not found".formatted(id)));
     }
 
-    private void validateAssetId(String id) {
+    private void validateAssetId(UUID id) {
         if (id == null) {
             throw new AssetValidationException("Asset id must not be null");
         }

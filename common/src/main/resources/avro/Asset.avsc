@@ -4,7 +4,10 @@
   "name": "Asset",
   "fields": [
     {
-      "type": "string",
+      "type": {
+        "type": "string",
+        "logicalType": "uuid"
+      },
       "name": "id",
       "doc": "Identifier of the asset"
     },

@@ -8,7 +8,6 @@ WORKDIR /app
 RUN chown app:app /app
 USER app
 
-WORKDIR /app
 COPY target/springjpa*.jar ./springjpa.jar
 
 
