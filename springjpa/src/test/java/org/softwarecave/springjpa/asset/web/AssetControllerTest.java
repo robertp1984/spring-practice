@@ -10,6 +10,9 @@ import org.softwarecave.springjpa.asset.web.dto.AssetDTOConverter;
 import org.softwarecave.springjpa.asset.web.dto.AssetReferenceDTOConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -24,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(AssetController.class)
-public class AssetControllerTest {
+class AssetControllerTest {
 
     private static final String EXTERNAL = "ext";
     public static final UUID UUID_1 = UUID.randomUUID();
@@ -41,22 +44,24 @@ public class AssetControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    public void testGetAssetsByFilter_name() throws Exception {
+    void testGetAssetsByFilter_name() throws Exception {
         // given
         var assetClasses = createAssetClasses();
         var assets = createAssets(assetClasses);
-        when(assetService.findFiltered(anyString(), isNull())).thenReturn(List.of(assets.getFirst()));
+
+        when(assetService.findFiltered(anyString(), isNull(), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(assets.getFirst())));
         when(assetDTOConverter.convertToDto(any())).thenReturn(convertEntityToDTO(assets.getFirst()));
 
         // when
         mockMvc.perform(get("/api/v1/assets")
                         .queryParam("name", "Google"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(UUID_1.toString()))
-                .andExpect(jsonPath("$[0].name").value("Google"))
-                .andExpect(jsonPath("$[0].description").value("Google shares"));
+                .andExpect(jsonPath("$.content[0].id").value(UUID_1.toString()))
+                .andExpect(jsonPath("$.content[0].name").value("Google"))
+                .andExpect(jsonPath("$.content[0].description").value("Google shares"));
 
-        verify(assetService).findFiltered(anyString(), isNull());
+        verify(assetService).findFiltered(anyString(), isNull(), any(Pageable.class));
     }
 
     private AssetDTO convertEntityToDTO(Asset asset) {
@@ -65,23 +70,25 @@ public class AssetControllerTest {
     }
 
     @Test
-    public void testGetAssetsByFilter_assetClassName() throws Exception {
+    void testGetAssetsByFilter_assetClassName() throws Exception {
         // given
         var assetClasses = createAssetClasses();
         var assets = createAssets(assetClasses);
-        when(assetService.findFiltered(isNull(), anyString())).thenReturn(List.of(assets.getLast()));
+        when(assetService.findFiltered(isNull(), anyString(), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(assets.getLast())));
         when(assetDTOConverter.convertToDto(any())).thenReturn(convertEntityToDTO(assets.getLast()));
 
         // when
         mockMvc.perform(get("/api/v1/assets")
                         .queryParam("assetClassName", "Microsoft"))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id").value(UUID_2.toString()))
-                .andExpect(jsonPath("$[0].name").value("Microsoft"))
-                .andExpect(jsonPath("$[0].description").value("Microsoft bonds"))
-                .andExpect(jsonPath("$[0].assetClass.name").value(EXTERNAL));
 
-        verify(assetService).findFiltered(isNull(), anyString());
+                .andExpect(jsonPath("$.content[0].id").value(UUID_2.toString()))
+                .andExpect(jsonPath("$.content[0].name").value("Microsoft"))
+                .andExpect(jsonPath("$.content[0].description").value("Microsoft bonds"))
+                .andExpect(jsonPath("$.content[0].assetClass.name").value(EXTERNAL));
+
+        verify(assetService).findFiltered(isNull(), anyString(), any(Pageable.class));
     }
 
     private static List<Asset> createAssets(List<AssetClass> assetClasses) {

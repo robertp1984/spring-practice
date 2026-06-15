@@ -15,7 +15,6 @@ public class ExactlyOnceDeliveryService {
 
     private final ExactlyOnceDeliveryEntryRepository exactlyOnceDeliveryEntryRepository;
 
-    @Transactional(readOnly = true, value = "transactionManager")
     public boolean isDuplicate(String messageId, String type) {
         var existingEntry = exactlyOnceDeliveryEntryRepository.findByMessageIdAndType(messageId, type);
         return existingEntry.isPresent();

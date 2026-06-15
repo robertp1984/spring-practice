@@ -1,12 +1,15 @@
 package org.softwarecave.springjpa.asset.service;
 
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
 import org.softwarecave.springjpa.asset.messaging.AssetKafkaPublisher;
 import org.softwarecave.springjpa.asset.model.Asset;
 import org.softwarecave.springjpa.asset.model.AssetShortRef;
 import org.softwarecave.springjpa.reference.model.AssetReference;
 import org.softwarecave.springjpa.reference.service.AssetReferenceService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +18,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
-@Transactional(value = "transactionManager")
 @RequiredArgsConstructor
 public class AssetService {
 
@@ -24,6 +26,7 @@ public class AssetService {
 
     private final AssetKafkaPublisher assetKafkaPublisher;
 
+    @Transactional(value = "transactionManager")
     public Asset addAsset(Asset asset) {
         validateNewAsset(asset);
         var savedAsset = assetRepository.save(asset);
@@ -31,6 +34,7 @@ public class AssetService {
         return savedAsset;
     }
 
+    @Transactional(value = "transactionManager")
     public Asset addAssetWithReferences(Asset asset) {
         validateNewAsset(asset);
         var savedAsset = assetRepository.save(asset);
@@ -42,7 +46,7 @@ public class AssetService {
         return savedAsset;
     }
 
-    @Transactional(readOnly = true, value = "transactionManager")
+    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
     public Asset findById(UUID id) {
         validateAssetId(id);
         return assetRepository.findById(id)
@@ -55,27 +59,26 @@ public class AssetService {
         }
     }
 
-    @Transactional(readOnly = true, value = "transactionManager")
-    public List<Asset> findByNameOrDescriptionLike(String likeExpr) {
-        return assetRepository.findByNameLikeOrDescriptionLike(likeExpr, likeExpr);
+    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
+    public Page<Asset> findByNameOrDescriptionLike(String likeExpr, Pageable pageable) {
+        return assetRepository.findByNameLikeOrDescriptionLike(likeExpr, likeExpr, pageable);
     }
 
-    @Transactional(readOnly = true, value = "transactionManager")
+    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
     public Optional<Asset> findByName(String name) {
         validateAssetName(name);
         return assetRepository.findByName(name);
     }
 
-    @Transactional(readOnly = true, value = "transactionManager")
-    public List<Asset> findByAssetClassName(String assetClassName) {
+    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
+    public Page<Asset> findByAssetClassName(String assetClassName, Pageable pageable) {
         validateAssetClassName(assetClassName);
-        return assetRepository.findByAssetClassName(assetClassName);
+        return assetRepository.findByAssetClassName(assetClassName, pageable);
     }
 
-    @Transactional(readOnly = true, value = "transactionManager")
-    public List<AssetShortRef> findShortRefByAssetClassName(String assetClassName) {
+    public Page<AssetShortRef> findShortRefByAssetClassName(String assetClassName, Pageable pageable) {
         validateAssetClassName(assetClassName);
-        return assetRepository.findShortRefByAssetClassName(assetClassName);
+        return assetRepository.findShortRefByAssetClassName(assetClassName, pageable);
     }
 
     private void validateAssetName(String name) {
@@ -96,14 +99,14 @@ public class AssetService {
         }
     }
 
-    @Transactional(readOnly = true, value = "transactionManager")
-    public List<Asset> findFiltered(String name, String assetClassName) {
-        if (!StringUtils.isBlank(name)) {
-            return findByName(name).stream().toList();
-        } else if (!StringUtils.isBlank(assetClassName)) {
-            return findByAssetClassName(assetClassName);
-        } else {
-            return assetRepository.findAll();
-        }
+    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
+    public Page<Asset> findFiltered(String name, String assetClassName, Pageable pageable) {
+        Specification<Asset> nameSpec = (root, cq, cb) -> {
+            return name != null ? cb.equal(root.get("name"), name) : null;
+        };
+        Specification<Asset> assetClassNameSpec = (root, cq, cb) -> {
+            return assetClassName != null ? cb.equal(root.get("assetClass").get("name"), assetClassName) : null;
+        };
+        return assetRepository.findAll(nameSpec.or(assetClassNameSpec), pageable);
     }
 }
