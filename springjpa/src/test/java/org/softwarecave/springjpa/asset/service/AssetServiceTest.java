@@ -1,18 +1,19 @@
 package org.softwarecave.springjpa.asset.service;
 
-import antlr.collections.impl.LList;
 import org.junit.jupiter.api.Test;
 import org.softwarecave.springjpa.asset.messaging.AssetKafkaPublisher;
 import org.softwarecave.springjpa.asset.model.Asset;
 import org.softwarecave.springjpa.asset.model.AssetClass;
-import org.softwarecave.springjpa.asset.model.AssetShortRef;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -26,6 +27,9 @@ public class AssetServiceTest {
     public static final String EXTERNAL = "External";
     public static final String INTERNAL = "Internal";
 
+    private static final Pageable DEFAULT_PAGEABLE = PageRequest.of(0, 100);
+    private static final Pageable PAGEABLE_SORT_BY_NAME = PageRequest.of(0, 100, Sort.by("name").ascending());
+
     @Autowired
     private AssetService assetService;
 
@@ -36,19 +40,20 @@ public class AssetServiceTest {
     private AssetClassService assetClassService;
 
     @Test
-    public void testSaveAndCountMatchingName() {
+    void testSaveAndCountMatchingName() {
         createSampleAssets();
 
-        List<Asset> foundAssets = assetService.findByNameOrDescriptionLike("H%");
-        assertThat(foundAssets)
+        Page<Asset> page = assetService.findByNameOrDescriptionLike("H%", DEFAULT_PAGEABLE);
+        assertThat(page)
                 .extracting(Asset::getName)
                 .hasSize(2)
                 .containsExactlyInAnyOrder("HBO", "HTC");
     }
 
     @Test
-    public void testSaveAndGetByName() {
+    void testSaveAndGetByName() {
         createSampleAssets();
+
         Optional<Asset> foundAsset = assetService.findByName("Disney");
         assertThat(foundAsset.get())
                 .isNotNull()
@@ -56,33 +61,35 @@ public class AssetServiceTest {
     }
 
     @Test
-    public void testSaveAndGetByAssetClassName_External() {
+    void testSaveAndGetByAssetClassName_External() {
         createSampleAssets();
-        List<Asset> foundAssets = assetService.findByAssetClassName(EXTERNAL);
-        assertThat(foundAssets)
+        Page<Asset> page = assetService.findByAssetClassName(EXTERNAL, DEFAULT_PAGEABLE);
+
+        assertThat(page)
                 .hasSize(3)
                 .extracting(Asset::getName)
                 .containsExactlyInAnyOrder("Netflix", "HBO", "HTC");
     }
 
     @Test
-    public void testSaveAndGetByAssetClassName_Internal() {
+    void testSaveAndGetByAssetClassName_Internal() {
         createSampleAssets();
-        List<Asset> foundAssets = assetService.findByAssetClassName(INTERNAL);
-        assertThat(foundAssets)
+        Page<Asset> page = assetService.findByAssetClassName(INTERNAL, DEFAULT_PAGEABLE);
+
+        assertThat(page)
                 .hasSize(2)
                 .extracting(Asset::getName)
                 .containsExactlyInAnyOrder("Disney", "CircleK");
     }
 
     @Test
-    public void testSaveAndGetAssetShortRefByAssetClassName_existingClassName() {
+    void testSaveAndGetAssetShortRefByAssetClassName_existingClassName() {
         // given
         createSampleAssets();
 
         // when
-        var shortRefByAssetClassName = assetService.findShortRefByAssetClassName(EXTERNAL)
-                .stream().sorted(Comparator.comparing(AssetShortRef::name)).toList();
+        var page = assetService.findShortRefByAssetClassName(EXTERNAL, PAGEABLE_SORT_BY_NAME);
+        var shortRefByAssetClassName = page.getContent();
 
         // then
         assertThat(shortRefByAssetClassName).hasSize(3);
@@ -98,12 +105,12 @@ public class AssetServiceTest {
     }
 
     @Test
-    public void testSaveAndGetFiltered_existingName() {
+    void testSaveAndGetFiltered_existingName() {
         // given
         createSampleAssets();
 
         // when
-        List<Asset> assets = assetService.findFiltered("HBO", null);
+        Page<Asset> assets = assetService.findFiltered("HBO", null, DEFAULT_PAGEABLE);
 
         // then
         assertThat(assets)
@@ -112,25 +119,25 @@ public class AssetServiceTest {
     }
 
     @Test
-    public void testSaveAndGetFiltered_missingName() {
+    void testSaveAndGetFiltered_missingName() {
         // given
         createSampleAssets();
 
         // when
-        List<Asset> assets = assetService.findFiltered("notexisting", null);
+        Page<Asset> assets = assetService.findFiltered("notexisting", null, DEFAULT_PAGEABLE);
 
         // then
         assertThat(assets)
-                .hasSize(0);
+                .isEmpty();
     }
 
     @Test
-    public void testSaveAndGetFiltered_existingAssetClassName() {
+    void testSaveAndGetFiltered_existingAssetClassName() {
         // given
         createSampleAssets();
 
         // when
-        List<Asset> assets = assetService.findFiltered(null, INTERNAL);
+        Page<Asset> assets = assetService.findFiltered(null, INTERNAL, DEFAULT_PAGEABLE);
 
         // then
         assertThat(assets)

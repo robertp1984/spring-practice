@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(value = "transactionManager")
 public class ClientService {
 
     private ClientRepository clientRepository;
@@ -17,6 +16,7 @@ public class ClientService {
         this.clientRepository = clientRepository;
     }
 
+    @Transactional(value = "transactionManager")
     public Client addClient(Client client) {
         if (client.getId() != null) {
             throw new DataValidationException("New client must have null key");

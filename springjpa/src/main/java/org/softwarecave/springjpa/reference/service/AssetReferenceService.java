@@ -10,12 +10,12 @@ import java.util.List;
 import java.util.Optional;
 
 @Service
-@Transactional(value = "transactionManager")
 @RequiredArgsConstructor
 public class AssetReferenceService {
 
     private final AssetReferenceRepository assetReferenceRepository;
 
+    @Transactional(value = "transactionManager")
     public List<AssetReference> saveAll(List<AssetReference> references) {
         validateReferences(references);
 
