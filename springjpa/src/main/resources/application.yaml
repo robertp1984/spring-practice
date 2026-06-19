@@ -38,6 +38,11 @@ spring:
         specific.avro.reader: true
         isolation.level: read_committed
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://localhost:9000
 
 management:
   endpoints:
@@ -74,13 +79,10 @@ logging:
         orm:
           jpa:
             JpaTransactionManager: debug
+        security: trace
       apache:
         kafka:
           clients:
             producer:
               internals:
                 TransactionManager: debug
-
-
-
-
