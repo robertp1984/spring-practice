@@ -2,7 +2,7 @@ package org.softwarecave.chat.service.summary;
 
 import lombok.extern.slf4j.Slf4j;
 import org.softwarecave.chat.model.Summary;
-import org.softwarecave.chat.service.ChatOptionsFactory;
+import org.softwarecave.chat.service.config.ChatOptionsFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
@@ -55,7 +55,7 @@ public class SummaryService {
     }
 
     private String getAISummary(String msg) {
-        var chatOptions = chatOptionsFactory.create(400);
+        var chatOptions = chatOptionsFactory.create(400, 1.0);
 
         var response = chatClient.prompt()
                 .system(SYSTEM_PROMPT)

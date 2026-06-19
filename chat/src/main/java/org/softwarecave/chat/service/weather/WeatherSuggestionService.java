@@ -2,6 +2,7 @@ package org.softwarecave.chat.service.weather;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.softwarecave.chat.service.config.ChatOptionsFactory;
 import org.softwarecave.chat.service.weather.client.CurrentWeatherFormatter;
 import org.softwarecave.chat.service.weather.client.WeatherClient;
 import org.springframework.ai.chat.client.ChatClient;
@@ -18,6 +19,7 @@ public class WeatherSuggestionService {
             """;
     private final ChatClient chatClient;
     private final WeatherClient weatherClient;
+    private final ChatOptionsFactory chatOptionsFactory;
 
     public WeatherSuggestionResponse getClothingSuggestion(double latitude, double longitude) {
         var currentWeather = weatherClient.getCurrent(latitude, longitude);
@@ -26,6 +28,7 @@ public class WeatherSuggestionService {
 
         var result = chatClient
                 .prompt()
+                .options(chatOptionsFactory.create(300, 1.0))
                 .system(SYSTEM_PROMPT)
                 .user(currentWeatherText)
                 .call()
