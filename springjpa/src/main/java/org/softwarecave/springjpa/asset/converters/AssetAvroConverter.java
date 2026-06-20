@@ -9,7 +9,6 @@ import org.softwarecave.springjpa.reference.model.AssetReference;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
