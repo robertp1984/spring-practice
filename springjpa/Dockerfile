@@ -12,4 +12,4 @@ COPY target/springjpa*.jar ./springjpa.jar
 COPY src/main/resources/tls/truststore.jks ./tls/truststore.jks
 
 
-ENTRYPOINT ["java", "-jar", "springjpa.jar", "-Djavax.net.ssl.trustStore=/app/tls/truststore.jks", "-Djavax.net.ssl.trustStorePassword="]
+ENTRYPOINT ["java", "-Djavax.net.ssl.trustStore=/app/tls/truststore.jks", "-Djavax.net.ssl.trustStorePassword=", "-jar", "springjpa.jar"]

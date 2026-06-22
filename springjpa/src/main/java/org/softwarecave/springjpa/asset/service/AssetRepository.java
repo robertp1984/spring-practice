@@ -26,8 +26,6 @@ public interface AssetRepository extends JpaRepository<Asset, UUID>,
 
     Page<AssetShortRef> findShortRefByAssetClassName(String assetClassName, Pageable pageable);
 
-    Page<Asset> findAll(Specification<Asset> spec, Pageable pageable);
-
     @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
     Optional<Asset> findWithReferencesById(UUID id);
 }

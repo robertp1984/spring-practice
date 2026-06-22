@@ -109,7 +109,12 @@ public class AssetService {
             if (assetClassName != null) {
                 predicates.add(cb.equal(root.get("assetClass").get("name"), assetClassName));
             }
-            return cb.or(predicates);
+
+            if (!predicates.isEmpty()) {
+                return cb.or(predicates);
+            } else {
+                return cb.conjunction(); // return all
+            }
         };
         return assetRepository.findAll(nameSpec, pageable);
     }
