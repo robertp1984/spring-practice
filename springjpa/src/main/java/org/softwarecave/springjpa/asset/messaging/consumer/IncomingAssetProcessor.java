@@ -73,7 +73,7 @@ public class IncomingAssetProcessor {
     }
 
     private static void validate(AssetEvent event) {
-        if (event == null) {
+        if (event == null || event.getAsset() == null) {
             throw new AssetValidationException("Asset is null in incoming asset");
         }
 

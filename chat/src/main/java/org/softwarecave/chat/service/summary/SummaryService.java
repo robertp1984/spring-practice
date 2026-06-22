@@ -56,7 +56,7 @@ public class SummaryService {
     }
 
     private String getAISummary(String msg) {
-        var chatOptions = chatOptionsFactory.create(400, 1.0);
+        var chatOptions = chatOptionsFactory.create(1000, 1.0);
 
         var response = chatClient.prompt()
                 .system(SYSTEM_PROMPT)
@@ -75,8 +75,6 @@ public class SummaryService {
     }
 
     public Flux<String> summarizeStream(String text) {
-        //        log.info("The summarized text is " + textSummary);
-        //        saveSummary(text, textSummary);
         return getAISummaryStream(text);
     }
 
@@ -85,7 +83,7 @@ public class SummaryService {
                 .system(SYSTEM_PROMPT)
                 .user(msg)
                 .options(OpenAiChatOptions.builder()
-                        .maxCompletionTokens(400))
+                        .maxCompletionTokens(1000))
                 .stream();
         Flux<String> responseTokens = response.content();
 

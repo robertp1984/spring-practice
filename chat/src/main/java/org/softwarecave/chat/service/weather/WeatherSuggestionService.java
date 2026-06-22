@@ -29,15 +29,20 @@ public class WeatherSuggestionService {
             var currentWeatherText = CurrentWeatherFormatter.format(currentWeather);
             log.info("Current weather: {}", currentWeatherText);
 
-            var result = chatClient
-                    .prompt()
-                    .options(chatOptionsFactory.create(300, 1.0))
-                    .system(SYSTEM_PROMPT)
-                    .user(currentWeatherText)
-                    .call()
-                    .entity(WeatherSuggestionResponse.class);
-            log.info("Suggestion: {}", result);
-            return result;
+            try {
+                var result = chatClient
+                        .prompt()
+                        .options(chatOptionsFactory.create(300, 1.0))
+                        .system(SYSTEM_PROMPT)
+                        .user(currentWeatherText)
+                        .call()
+                        .entity(WeatherSuggestionResponse.class);
+                log.info("Suggestion: {}", result);
+                return result;
+            } catch (Exception e) {
+                log.error("Failed to get clothing suggestion from LLM", e);
+                throw new WeatherProcessingException("Failed to get clothing suggestion from LLM", e);
+            }
         });
     }
 }

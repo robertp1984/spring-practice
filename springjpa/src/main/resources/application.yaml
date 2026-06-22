@@ -48,13 +48,13 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: "health,info,metrics,prometheus,loggers"
     jmx:
       exposure:
-        include: "*"
+        include: "health,info,metrics,prometheus,loggers"
     health:
-      show-details: always
-      show-components: always
+      show-details: when-authorized
+      show-components: when-authorized
 
 
 app:
