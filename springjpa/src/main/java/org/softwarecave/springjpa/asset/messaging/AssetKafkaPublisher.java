@@ -32,6 +32,8 @@ public class AssetKafkaPublisher {
         var future = kafkaTemplate.send(topicName, event.getAsset().getId().toString(), event);
         future.whenComplete((result, throwable) -> {
             if (throwable != null) {
+                log.error("Failed to send event {} to topic {}", event, topicName, throwable);
+            } else {
                 RecordMetadata recordMetadata = result.getRecordMetadata();
                 log.info("Sent event successfully to topic {} partition {} and offset {}", recordMetadata.topic(),
                         recordMetadata.partition(), recordMetadata.offset());

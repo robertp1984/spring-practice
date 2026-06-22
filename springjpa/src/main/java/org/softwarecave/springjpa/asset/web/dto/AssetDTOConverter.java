@@ -36,7 +36,10 @@ public class AssetDTOConverter {
         }
 
         AssetClassDTO assetClassDTO = assetDTO.assetClass();
-        AssetClass assetClass = assetClassDTO != null ? assetClassDTOConverter.toEntity(assetClassDTO) : null;
+        if (assetClassDTO == null) {
+            throw new AssetValidationException("Asset class of the asset must not be null");
+        }
+        AssetClass assetClass = assetClassDTOConverter.toEntity(assetClassDTO);
 
         var asset = new Asset(assetDTO.id(), assetDTO.name(), assetDTO.description(), assetClass, List.of());
 

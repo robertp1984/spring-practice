@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.softwarecave.chat.model.Summary;
 import org.softwarecave.chat.service.config.ChatOptionsFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -64,9 +65,9 @@ public class SummaryService {
                 .call();
 
         var chatResponse = response.chatResponse();
-        if (chatResponse != null && chatResponse.getResult() != null
-                && chatResponse.getResult().getMetadata() != null) {
-            String thinking = chatResponse.getResult().getMetadata().get(THINKING);
+        if (chatResponse != null && chatResponse.getResult() != null) {
+            Generation result = chatResponse.getResult();
+            String thinking = result.getMetadata().get(THINKING);
             log.info("Thinking method: {}", thinking);
         }
 

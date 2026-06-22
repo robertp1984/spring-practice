@@ -7,6 +7,7 @@ import org.softwarecave.chat.service.weather.client.CurrentWeatherFormatter;
 import org.softwarecave.chat.service.weather.client.WeatherClient;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -21,20 +22,23 @@ public class WeatherSuggestionService {
     private final WeatherClient weatherClient;
     private final ChatOptionsFactory chatOptionsFactory;
 
-    public WeatherSuggestionResponse getClothingSuggestion(double latitude, double longitude) {
-        var currentWeather = weatherClient.getCurrent(latitude, longitude);
-        var currentWeatherText = CurrentWeatherFormatter.format(currentWeather.block());
-        log.info("Current weather: {}", currentWeatherText);
+    public Mono<WeatherSuggestionResponse> getClothingSuggestion(double latitude, double longitude) {
+        var currentWeatherMono = weatherClient.getCurrent(latitude, longitude);
 
-        var result = chatClient
-                .prompt()
-                .options(chatOptionsFactory.create(300, 1.0))
-                .system(SYSTEM_PROMPT)
-                .user(currentWeatherText)
-                .call()
-                .entity(WeatherSuggestionResponse.class);
-        log.info("Suggestion: {}", result);
-        return result;
+        return currentWeatherMono.map(currentWeather -> {
+            var currentWeatherText = CurrentWeatherFormatter.format(currentWeather);
+            log.info("Current weather: {}", currentWeatherText);
+
+            var result = chatClient
+                    .prompt()
+                    .options(chatOptionsFactory.create(300, 1.0))
+                    .system(SYSTEM_PROMPT)
+                    .user(currentWeatherText)
+                    .call()
+                    .entity(WeatherSuggestionResponse.class);
+            log.info("Suggestion: {}", result);
+            return result;
+        });
     }
 }
 

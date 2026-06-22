@@ -1,6 +1,8 @@
 package org.softwarecave.springjpa.reference.service;
 
-public class AssetReferenceValidationException extends RuntimeException {
+import org.softwarecave.springjpa.service.DataValidationException;
+
+public class AssetReferenceValidationException extends DataValidationException {
     public AssetReferenceValidationException(String message) {
         super(message);
     }

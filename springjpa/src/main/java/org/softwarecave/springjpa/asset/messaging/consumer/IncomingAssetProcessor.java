@@ -43,7 +43,7 @@ public class IncomingAssetProcessor {
             asset = saveAsset(event, messageId);
         } catch (Exception e) {
             log.error("Failed to save the asset into database", e);
-            throw e;
+            throw new IncomingAssetProcessingException("Failed to save the asset into database", e);
         }
 
         // final check for duplicates with throwing

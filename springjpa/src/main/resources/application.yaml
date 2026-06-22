@@ -65,7 +65,10 @@ app:
       topic-name: incoming.asset.avro
       name-format: "Incoming #%d"
       description-format: "Incoming asset with random number #%d"
-
+  kafka:
+    retry:
+      delay-ms: 1000
+      max-attempts: 3
 
 
 logging:
