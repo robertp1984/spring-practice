@@ -48,13 +48,13 @@ management:
   endpoints:
     web:
       exposure:
-        include: "*"
+        include: "health,info,metrics,prometheus,loggers"
     jmx:
       exposure:
-        include: "*"
+        include: "health,info,metrics,prometheus,loggers"
     health:
-      show-details: always
-      show-components: always
+      show-details: when-authorized
+      show-components: when-authorized
 
 
 app:
@@ -65,7 +65,10 @@ app:
       topic-name: incoming.asset.avro
       name-format: "Incoming #%d"
       description-format: "Incoming asset with random number #%d"
-
+  kafka:
+    retry:
+      delay-ms: 1000
+      max-attempts: 3
 
 
 logging:

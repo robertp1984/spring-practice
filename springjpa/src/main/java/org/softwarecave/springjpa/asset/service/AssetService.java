@@ -1,5 +1,7 @@
 package org.softwarecave.springjpa.asset.service;
 
+import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import lombok.RequiredArgsConstructor;
 import org.softwarecave.springjpa.asset.messaging.AssetKafkaPublisher;
 import org.softwarecave.springjpa.asset.model.Asset;
@@ -13,6 +15,7 @@ import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -46,10 +49,9 @@ public class AssetService {
         return savedAsset;
     }
 
-    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
     public Asset findById(UUID id) {
         validateAssetId(id);
-        return assetRepository.findById(id)
+        return assetRepository.findWithReferencesById(id)
                 .orElseThrow(() -> new NoSuchAssetException("Asset with id %s was not found".formatted(id)));
     }
 
@@ -59,18 +61,15 @@ public class AssetService {
         }
     }
 
-    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
     public Page<Asset> findByNameOrDescriptionLike(String likeExpr, Pageable pageable) {
         return assetRepository.findByNameLikeOrDescriptionLike(likeExpr, likeExpr, pageable);
     }
 
-    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
     public Optional<Asset> findByName(String name) {
         validateAssetName(name);
         return assetRepository.findByName(name);
     }
 
-    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
     public Page<Asset> findByAssetClassName(String assetClassName, Pageable pageable) {
         validateAssetClassName(assetClassName);
         return assetRepository.findByAssetClassName(assetClassName, pageable);
@@ -99,14 +98,24 @@ public class AssetService {
         }
     }
 
-    @EntityGraph(attributePaths = "references", type = EntityGraph.EntityGraphType.LOAD)
     public Page<Asset> findFiltered(String name, String assetClassName, Pageable pageable) {
         Specification<Asset> nameSpec = (root, cq, cb) -> {
-            return name != null ? cb.equal(root.get("name"), name) : null;
+            root.fetch("references", JoinType.LEFT);
+
+            var predicates = new ArrayList<Predicate>();
+            if (name != null) {
+                predicates.add(cb.equal(root.get("name"), name));
+            }
+            if (assetClassName != null) {
+                predicates.add(cb.equal(root.get("assetClass").get("name"), assetClassName));
+            }
+
+            if (!predicates.isEmpty()) {
+                return cb.or(predicates);
+            } else {
+                return cb.conjunction(); // return all
+            }
         };
-        Specification<Asset> assetClassNameSpec = (root, cq, cb) -> {
-            return assetClassName != null ? cb.equal(root.get("assetClass").get("name"), assetClassName) : null;
-        };
-        return assetRepository.findAll(nameSpec.or(assetClassNameSpec), pageable);
+        return assetRepository.findAll(nameSpec, pageable);
     }
 }

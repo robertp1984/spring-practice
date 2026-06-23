@@ -43,7 +43,7 @@ public class IncomingAssetProcessor {
             asset = saveAsset(event, messageId);
         } catch (Exception e) {
             log.error("Failed to save the asset into database", e);
-            throw e;
+            throw new IncomingAssetProcessingException("Failed to save the asset into database", e);
         }
 
         // final check for duplicates with throwing
@@ -73,7 +73,7 @@ public class IncomingAssetProcessor {
     }
 
     private static void validate(AssetEvent event) {
-        if (event == null) {
+        if (event == null || event.getAsset() == null) {
             throw new AssetValidationException("Asset is null in incoming asset");
         }
 
