@@ -100,7 +100,9 @@ public class AssetService {
 
     public Page<Asset> findFiltered(String name, String assetClassName, Pageable pageable) {
         Specification<Asset> nameSpec = (root, cq, cb) -> {
-            root.fetch("references", JoinType.LEFT);
+            if (cq.getResultType() != Long.class && cq.getResultType() != long.class) {
+                root.fetch("references", JoinType.LEFT);
+            }
 
             var predicates = new ArrayList<Predicate>();
             if (name != null) {
