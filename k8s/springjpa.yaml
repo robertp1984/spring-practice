@@ -23,7 +23,7 @@ spec:
       containers:
       - name: springjpa
         image: robertp22/springjpa:0.0.1
-        #imagePullPolicy: Always
+        imagePullPolicy: Always  # On purpose so that we can always get the latest image from the registry
         resources:
           requests:
             memory: "128Mi"
@@ -61,6 +61,9 @@ spec:
             value: kcluster-kafka-bootstrap.kafka.svc.cluster.local:9092
           - name: SPRING_KAFKA_CONSUMER_PROPERTIES_SCHEMA_REGISTRY_URL
             value: http://schema-registry.kafka.svc.cluster.local:8081
+          - name: SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI
+            value: http://authserver:9000
+
         
 ---
 apiVersion: v1

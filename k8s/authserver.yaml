@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: authserver
+  namespace: spring-practice
+  labels:
+    app: authserver
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: authserver
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: authserver
+    spec:
+      containers:
+      - name: authserver
+        image: robertp22/authserver:0.0.1
+        imagePullPolicy: Always  # On purpose so that we can always get the latest image from the registry
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "500m"
+          limits:
+            memory: "512Mi"
+            cpu: "2"
+        securityContext:
+          allowPrivilegeEscalation: false
+          #runAsNonRoot: true
+          capabilities:
+            drop:
+              - ALL
+          readOnlyRootFilesystem: false
+        ports:
+        - containerPort: 9000
+#        readinessProbe:
+#          httpGet:
+#            path: /actuator/health/readiness
+#            port: 8080
+#          initialDelaySeconds: 120
+#          periodSeconds: 2
+#        livenessProbe:
+#          httpGet:
+#            path: /actuator/health/liveness
+#            port: 8080
+#          initialDelaySeconds: 120
+#          periodSeconds: 2
+        env:
+          - name: SERVER_SSL_ENABLED  # Disabled TLS because using an Ingress with TLS termination
+            value: "false"
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: authserver
+  namespace: spring-practice
+spec:
+  selector:
+    app: authserver
+  ports:
+    - port: 9000
+      targetPort: 9000
+  type: ClusterIP
