@@ -32,3 +32,6 @@ kubectl apply -f ingress.yaml
 
 # Minikube tunnel
 minikube tunnel
+
+# Port forwarding for authserver
+kubectl -n spring-practice port-forward svc/authserver 9000:9000
