@@ -19,7 +19,7 @@ public class WeatherSuggestionController {
     public String getSuggestion(@RequestParam("latitude") double latitude,
                                 @RequestParam("longitude") double longitude) {
         var weatherSuggestion = weatherSuggestionService.getClothingSuggestion(latitude, longitude);
-        return weatherSuggestion.map(WeatherSuggestionResponseFormatter::format).block();
+        return WeatherSuggestionResponseFormatter.format(weatherSuggestion);
     }
 
 }

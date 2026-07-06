@@ -191,6 +191,7 @@ services:
       - "8090:8080"
     environment:
       - OPENAI_API_KEY=${OPENAI_API_KEY}
+      - API_NINJAS_API_KEY=${API_NINJAS_API_KEY}
 
   authserver:
     image: robertp22/authserver:0.0.1

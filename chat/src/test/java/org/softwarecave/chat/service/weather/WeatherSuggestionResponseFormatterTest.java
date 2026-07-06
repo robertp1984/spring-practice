@@ -15,7 +15,8 @@ class WeatherSuggestionResponseFormatterTest {
         // Arrange
         List<String> weatherLines = List.of("Sunny, 25°C");
         String suggestion = "Wear light clothing and sunscreen.";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, suggestion);
+        List<String> locationLines = List.of("City: Sample City");
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, suggestion);
 
         // Act
         String result = WeatherSuggestionResponseFormatter.format(response);
@@ -24,6 +25,7 @@ class WeatherSuggestionResponseFormatterTest {
         assertNotNull(result);
         assertTrue(result.contains("Current weather:"));
         assertTrue(result.contains("Sunny, 25°C"));
+        assertTrue(result.contains("City: Sample City"));
         assertTrue(result.contains("Suggestion:"));
         assertTrue(result.contains("Wear light clothing and sunscreen."));
     }
@@ -36,8 +38,9 @@ class WeatherSuggestionResponseFormatterTest {
                 "Humidity: 45%",
                 "Wind: 10 km/h"
         );
+        List<String> locationLines = List.of("City: Sample City");
         String suggestion = "Wear light, breathable clothing. Bring a hat for sun protection.";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, suggestion);
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, suggestion);
 
         // Act
         String result = WeatherSuggestionResponseFormatter.format(response);
@@ -47,6 +50,7 @@ class WeatherSuggestionResponseFormatterTest {
         assertTrue(result.contains("Sunny, 25°C"));
         assertTrue(result.contains("Humidity: 45%"));
         assertTrue(result.contains("Wind: 10 km/h"));
+        assertTrue(result.contains("City: Sample City"));
         assertTrue(result.contains("Wear light, breathable clothing. Bring a hat for sun protection."));
     }
 
@@ -54,8 +58,9 @@ class WeatherSuggestionResponseFormatterTest {
     void testFormatWithEmptyWeatherLines() {
         // Arrange
         List<String> weatherLines = Collections.emptyList();
+        List<String> locationLines = List.of("City: Sample City");
         String suggestion = "No weather data available.";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, suggestion);
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, suggestion);
 
         // Act
         String result = WeatherSuggestionResponseFormatter.format(response);
@@ -71,8 +76,9 @@ class WeatherSuggestionResponseFormatterTest {
     void testFormatWithEmptySuggestion() {
         // Arrange
         List<String> weatherLines = List.of("Rainy, 15°C");
+        List<String> locationLines = List.of("City: Sample City");
         String suggestion = "";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, suggestion);
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, suggestion);
 
         // Act
         String result = WeatherSuggestionResponseFormatter.format(response);
@@ -81,6 +87,7 @@ class WeatherSuggestionResponseFormatterTest {
         assertNotNull(result);
         assertTrue(result.contains("Current weather:"));
         assertTrue(result.contains("Rainy, 15°C"));
+        assertTrue(result.contains("City: Sample City"));
         assertTrue(result.contains("Suggestion:"));
     }
 
@@ -88,14 +95,17 @@ class WeatherSuggestionResponseFormatterTest {
     void testFormatWithMultilineSuggestion() {
         // Arrange
         List<String> weatherLines = List.of("Cold, -5°C");
+        List<String> locationLines = List.of("City: Sample City");
         String suggestion = "Wear heavy winter clothing.\nLayer your clothes.\nDon't forget gloves and a scarf.";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, suggestion);
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, suggestion);
 
         // Act
         String result = WeatherSuggestionResponseFormatter.format(response);
 
         // Assert
         assertNotNull(result);
+        assertTrue(result.contains("Cold, -5°C"));
+        assertTrue(result.contains("City: Sample City"));
         assertTrue(result.contains("Wear heavy winter clothing."));
         assertTrue(result.contains("Layer your clothes."));
         assertTrue(result.contains("Don't forget gloves and a scarf."));
@@ -111,10 +121,11 @@ class WeatherSuggestionResponseFormatterTest {
                 "Wind: 12 km/h from the northeast",
                 "UV Index: 3 (moderate)"
         );
+        List<String> locationLines = List.of("Location: Sample City");
         String suggestion = "Wear layers that can be adjusted throughout the day. " +
                 "Bring a light rain jacket just in case. Comfortable jeans or trousers would be appropriate. " +
                 "Non-slip shoes recommended if walking outdoors.";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, suggestion);
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, suggestion);
 
         // Act
         String result = WeatherSuggestionResponseFormatter.format(response);

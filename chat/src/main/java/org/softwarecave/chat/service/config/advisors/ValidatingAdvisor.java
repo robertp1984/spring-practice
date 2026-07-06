@@ -1,7 +1,7 @@
-package org.softwarecave.chat.service.config;
+package org.softwarecave.chat.service.config.advisors;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.softwarecave.chat.service.config.ChatInputValidationException;
 import org.springframework.ai.chat.client.ChatClientRequest;
 import org.springframework.ai.chat.client.ChatClientResponse;
 import org.springframework.ai.chat.client.advisor.api.CallAdvisor;

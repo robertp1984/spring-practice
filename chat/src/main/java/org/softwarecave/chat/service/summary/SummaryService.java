@@ -7,10 +7,13 @@ import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.openai.OpenAiChatOptions;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import reactor.core.publisher.Flux;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 
 @Service
@@ -18,26 +21,28 @@ import java.time.Duration;
 public class SummaryService {
 
     private static final String THINKING = "thinking";
-    private static final String SYSTEM_PROMPT = """
-            You are summarizing the messages using simple and clear English.
-            If possible please use the bullet points to indicate the tasks and actions.
-            Please add at most 3 tags at the bottom related to the message being summarized.
-            """;
 
     private final SummaryRepository summaryRepository;
     private final ChatOptionsFactory chatOptionsFactory;
     private final ChatClient chatClient;
+    private final String systemPrompt;
     private final int streamBufferMaxSize;
     private final int streamBufferMaxTime;
 
 
     public SummaryService(SummaryRepository summaryRepository, ChatOptionsFactory chatOptionsFactory,
                           ChatClient chatClient,
+                          @Value("classpath:/prompts/summary-system-prompt.txt") Resource systemPrompt,
                           @Value("${app.ai.stream.buffer.max-size}") int streamBufferMaxSize,
                           @Value("${app.ai.stream.buffer.max-time}") int streamBufferMaxTime) {
         this.summaryRepository = summaryRepository;
         this.chatOptionsFactory = chatOptionsFactory;
         this.chatClient = chatClient;
+        try {
+            this.systemPrompt = systemPrompt.getContentAsString(StandardCharsets.UTF_8);
+        } catch (IOException e) {
+            throw new IllegalArgumentException("Failed to read summary system prompt", e);
+        }
         this.streamBufferMaxSize = streamBufferMaxSize;
         this.streamBufferMaxTime = streamBufferMaxTime;
     }
@@ -59,7 +64,7 @@ public class SummaryService {
         var chatOptions = chatOptionsFactory.create(1000, 1.0);
 
         var response = chatClient.prompt()
-                .system(SYSTEM_PROMPT)
+                .system(systemPrompt)
                 .user(msg)
                 .options(chatOptions)
                 .call();
@@ -80,7 +85,7 @@ public class SummaryService {
 
     private Flux<String> getAISummaryStream(String msg) {
         var response = chatClient.prompt()
-                .system(SYSTEM_PROMPT)
+                .system(systemPrompt)
                 .user(msg)
                 .options(OpenAiChatOptions.builder()
                         .maxCompletionTokens(1000))
