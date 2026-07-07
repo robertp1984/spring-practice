@@ -18,11 +18,14 @@ kubectl apply -f kafka-with-dual-role-nodes.yaml
 # Schema registry
 kubectl apply -f schema-registry.yaml
 
-# App
+# Application SpringJPA
 kns spring-practice
 kubectl apply -f springjpa.yaml
 
+# Application Chat
+kns spring-practice
 kubectl create secret generic openai-api-key --from-literal=OPENAI_API_KEY=${OPENAI_API_KEY}
+kubectl create secret generic api-ninjas-api-key --from-literal=API_NINJAS_API_KEY=${API_NINJAS_API_KEY}
 kubectl apply -f chat.yaml
 
 # Ingress with TLS and dummy certificate
@@ -33,5 +36,5 @@ kubectl apply -f ingress.yaml
 # Minikube tunnel
 minikube tunnel
 
-# Port forwarding for authserver
+# Port forwarding to OAuth2.0 authserver (for logging into the SpringJPA application)
 kubectl -n spring-practice port-forward svc/authserver 9000:9000

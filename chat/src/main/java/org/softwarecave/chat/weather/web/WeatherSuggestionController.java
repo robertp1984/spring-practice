@@ -1,8 +1,8 @@
-package org.softwarecave.chat.web;
+package org.softwarecave.chat.weather.web;
 
 import lombok.RequiredArgsConstructor;
-import org.softwarecave.chat.service.weather.WeatherSuggestionResponseFormatter;
-import org.softwarecave.chat.service.weather.WeatherSuggestionService;
+import org.softwarecave.chat.weather.service.WeatherSuggestionResponseFormatter;
+import org.softwarecave.chat.weather.service.WeatherSuggestionService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -19,7 +19,7 @@ public class WeatherSuggestionController {
     public String getSuggestion(@RequestParam("latitude") double latitude,
                                 @RequestParam("longitude") double longitude) {
         var weatherSuggestion = weatherSuggestionService.getClothingSuggestion(latitude, longitude);
-        return weatherSuggestion.map(WeatherSuggestionResponseFormatter::format).block();
+        return WeatherSuggestionResponseFormatter.format(weatherSuggestion);
     }
 
 }

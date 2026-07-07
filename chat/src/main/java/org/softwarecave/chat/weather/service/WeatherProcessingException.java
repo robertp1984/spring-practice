@@ -1,4 +1,4 @@
-package org.softwarecave.chat.service.weather;
+package org.softwarecave.chat.weather.service;
 
 public class WeatherProcessingException extends RuntimeException {
     public WeatherProcessingException(String message) {

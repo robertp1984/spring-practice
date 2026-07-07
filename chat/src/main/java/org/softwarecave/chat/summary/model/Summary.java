@@ -1,4 +1,4 @@
-package org.softwarecave.chat.model;
+package org.softwarecave.chat.summary.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

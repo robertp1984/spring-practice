@@ -1,7 +1,7 @@
-package org.softwarecave.chat.web;
+package org.softwarecave.chat.summary.web;
 
 import lombok.RequiredArgsConstructor;
-import org.softwarecave.chat.service.summary.SummaryService;
+import org.softwarecave.chat.summary.service.SummaryService;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

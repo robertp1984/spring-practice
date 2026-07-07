@@ -1,4 +1,4 @@
-package org.softwarecave.chat.service.config;
+package org.softwarecave.chat.config;
 
 import org.springframework.ai.chat.prompt.ChatOptions;
 import org.springframework.ai.ollama.api.OllamaChatOptions;

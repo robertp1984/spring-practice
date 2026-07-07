@@ -1,14 +1,15 @@
 package org.softwarecave.chat.web;
 
 import org.junit.jupiter.api.Test;
-import org.softwarecave.chat.service.weather.WeatherSuggestionResponse;
-import org.softwarecave.chat.service.weather.WeatherSuggestionService;
+import org.softwarecave.chat.weather.service.WeatherSuggestionResponse;
+import org.softwarecave.chat.weather.service.WeatherSuggestionService;
+import org.softwarecave.chat.weather.web.WeatherSuggestionController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
-import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -22,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @WebMvcTest(WeatherSuggestionController.class)
+@ActiveProfiles("test")
 class WeatherSuggestionControllerTest {
 
     @Autowired
@@ -36,11 +38,12 @@ class WeatherSuggestionControllerTest {
         double latitude = 10;
         double longitude = -10;
         List<String> weatherLines = List.of("Temperature: 25°C", "Rain: 5mm");
+        List<String> locationLines = List.of("Location: Sample City");
         String clothingSuggestion = "Wear light clothing and sunscreen.";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, clothingSuggestion);
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, clothingSuggestion);
 
         when(weatherSuggestionService.getClothingSuggestion(latitude, longitude))
-                .thenReturn(Mono.just(response));
+                .thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/api/v1/weatherSuggestion")
@@ -52,6 +55,7 @@ class WeatherSuggestionControllerTest {
                 .andExpect(content().string(containsString("Current weather:")))
                 .andExpect(content().string(containsString("Temperature: 25°C")))
                 .andExpect(content().string(containsString("Rain: 5mm")))
+                .andExpect(content().string(containsString("Location: Sample City")))
                 .andExpect(content().string(containsString("Suggestion:")))
                 .andExpect(content().string(containsString("Wear light clothing and sunscreen.")));
 
@@ -63,10 +67,11 @@ class WeatherSuggestionControllerTest {
         // Arrange
         double latitude = 35.6762;
         double longitude = 139.6503;
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(List.of(), "No weather data available.");
+        List<String> locationLines = List.of("Location: Sample City");
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(List.of(), locationLines, "No weather data available.");
 
         when(weatherSuggestionService.getClothingSuggestion(latitude, longitude))
-                .thenReturn(Mono.just(response));
+                .thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/api/v1/weatherSuggestion")
@@ -75,6 +80,7 @@ class WeatherSuggestionControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(content().string(containsString("Current weather:")))
+                .andExpect(content().string(containsString("Location: Sample City")))
                 .andExpect(content().string(containsString("Suggestion:")))
                 .andExpect(content().string(containsString("No weather data available.")));
     }
@@ -84,13 +90,15 @@ class WeatherSuggestionControllerTest {
         // Arrange
         double latitude = 37.7749;
         double longitude = -122.4194;
+        List<String> locationLines = List.of("Location: San Francisco, CA");
         WeatherSuggestionResponse response = new WeatherSuggestionResponse(
                 List.of("Temperature: 22°C"),
+                locationLines,
                 "Great weather for outdoor activities."
         );
 
         when(weatherSuggestionService.getClothingSuggestion(latitude, longitude))
-                .thenReturn(Mono.just(response));
+                .thenReturn(response);
 
         // Act
         mockMvc.perform(get("/api/v1/weatherSuggestion")
@@ -108,12 +116,14 @@ class WeatherSuggestionControllerTest {
         // Arrange
         double latitude = 52.5200;
         double longitude = 13.4050;
+        List<String> locationLines = List.of("Location: Berlin, Germany");
         WeatherSuggestionResponse response = new WeatherSuggestionResponse(
                 List.of("Temperature: 18°C"),
+                locationLines,
                 "Wear layers for temperature changes.");
 
         when(weatherSuggestionService.getClothingSuggestion(latitude, longitude))
-                .thenReturn(Mono.just(response));
+                .thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/api/v1/weatherSuggestion")
@@ -130,11 +140,12 @@ class WeatherSuggestionControllerTest {
         double latitude = 44.4268;
         double longitude = 26.1025;
         List<String> weatherLines = List.of("Temperature: 16°C");
+        List<String> locationLines = List.of("Location: Bucharest, Romania");
         String clothingSuggestion = "Bring a light jacket.";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, clothingSuggestion);
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, clothingSuggestion);
 
         when(weatherSuggestionService.getClothingSuggestion(latitude, longitude))
-                .thenReturn(Mono.just(response));
+                .thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/api/v1/weatherSuggestion")
@@ -153,11 +164,12 @@ class WeatherSuggestionControllerTest {
         double latitude = 10.0;
         double longitude = 12.00;
         List<String> weatherLines = List.of("Temperature: 15°C", "Rain: 20mm");
+        List<String> locationLines = List.of("Location: Sample City");
         String clothingSuggestion = "Wear light clothing and take umbrella.";
-        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, clothingSuggestion);
+        WeatherSuggestionResponse response = new WeatherSuggestionResponse(weatherLines, locationLines, clothingSuggestion);
 
         when(weatherSuggestionService.getClothingSuggestion(latitude, longitude))
-                .thenReturn(Mono.just(response));
+                .thenReturn(response);
 
         // Act & Assert
         mockMvc.perform(get("/api/v1/weatherSuggestion")
@@ -168,6 +180,7 @@ class WeatherSuggestionControllerTest {
                 .andExpect(content().string(containsString("Current weather:")))
                 .andExpect(content().string(containsString("Temperature: 15°C")))
                 .andExpect(content().string(containsString("Rain: 20mm")))
+                .andExpect(content().string(containsString("Location: Sample City")))
                 .andExpect(content().string(containsString("Suggestion:")))
                 .andExpect(content().string(containsString("Wear light clothing and take umbrella.")));
     }

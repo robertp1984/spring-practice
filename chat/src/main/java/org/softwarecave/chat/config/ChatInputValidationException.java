@@ -1,4 +1,4 @@
-package org.softwarecave.chat.service.config;
+package org.softwarecave.chat.config;
 
 public class ChatInputValidationException extends RuntimeException {
     public ChatInputValidationException(String message) {
