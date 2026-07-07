@@ -1,8 +1,9 @@
 package org.softwarecave.chat.web;
 
 import org.junit.jupiter.api.Test;
-import org.softwarecave.chat.service.weather.WeatherSuggestionResponse;
-import org.softwarecave.chat.service.weather.WeatherSuggestionService;
+import org.softwarecave.chat.weather.service.WeatherSuggestionResponse;
+import org.softwarecave.chat.weather.service.WeatherSuggestionService;
+import org.softwarecave.chat.weather.web.WeatherSuggestionController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;

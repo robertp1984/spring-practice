@@ -1,10 +1,10 @@
-package org.softwarecave.chat.service.weather;
+package org.softwarecave.chat.weather.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.softwarecave.chat.geocoding.GeocodingTool;
-import org.softwarecave.chat.service.config.ChatOptionsFactory;
-import org.softwarecave.chat.service.weather.client.CurrentWeatherFormatter;
-import org.softwarecave.chat.service.weather.client.WeatherClient;
+import org.softwarecave.chat.config.ChatOptionsFactory;
+import org.softwarecave.chat.weather.service.client.CurrentWeatherFormatter;
+import org.softwarecave.chat.weather.service.client.WeatherClient;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;

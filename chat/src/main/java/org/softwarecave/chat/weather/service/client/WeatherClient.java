@@ -1,11 +1,9 @@
-package org.softwarecave.chat.service.weather.client;
+package org.softwarecave.chat.weather.service.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClient;
-import org.springframework.web.reactive.function.client.WebClient;
-import reactor.core.publisher.Mono;
 
 @Service
 public class WeatherClient {

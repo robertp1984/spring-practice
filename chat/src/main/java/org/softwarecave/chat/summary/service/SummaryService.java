@@ -1,8 +1,8 @@
-package org.softwarecave.chat.service.summary;
+package org.softwarecave.chat.summary.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.softwarecave.chat.model.Summary;
-import org.softwarecave.chat.service.config.ChatOptionsFactory;
+import org.softwarecave.chat.summary.model.Summary;
+import org.softwarecave.chat.config.ChatOptionsFactory;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.Generation;
 import org.springframework.ai.openai.OpenAiChatOptions;

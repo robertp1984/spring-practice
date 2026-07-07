@@ -1,4 +1,4 @@
-package org.softwarecave.chat.service.weather.client;
+package org.softwarecave.chat.weather.service.client;
 
 import java.util.Locale;
 

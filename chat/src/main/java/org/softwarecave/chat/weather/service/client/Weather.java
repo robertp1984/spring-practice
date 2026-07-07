@@ -1,4 +1,4 @@
-package org.softwarecave.chat.service.weather.client;
+package org.softwarecave.chat.weather.service.client;
 
 public record Weather(CurrentUnits current_units, Current current) {
 

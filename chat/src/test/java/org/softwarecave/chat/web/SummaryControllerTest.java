@@ -2,8 +2,9 @@ package org.softwarecave.chat.web;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.softwarecave.chat.model.Summary;
-import org.softwarecave.chat.service.summary.SummaryService;
+import org.softwarecave.chat.summary.model.Summary;
+import org.softwarecave.chat.summary.service.SummaryService;
+import org.softwarecave.chat.summary.web.SummaryController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.http.MediaType;
