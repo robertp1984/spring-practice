@@ -7,6 +7,7 @@ import org.softwarecave.chat.weather.service.client.CurrentWeatherFormatter;
 import org.softwarecave.chat.weather.service.client.WeatherClient;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
 
@@ -38,6 +39,7 @@ public class WeatherSuggestionService {
         this.geocodingTool = geocodingTool;
     }
 
+    @Cacheable(value = "clothingSuggestion")
     public WeatherSuggestionResponse getClothingSuggestion(double latitude, double longitude) {
         var currentWeather = weatherClient.getCurrent(latitude, longitude);
 

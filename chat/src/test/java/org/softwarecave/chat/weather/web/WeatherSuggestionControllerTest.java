@@ -1,4 +1,4 @@
-package org.softwarecave.chat.web;
+package org.softwarecave.chat.weather.web;
 
 import org.junit.jupiter.api.Test;
 import org.softwarecave.chat.weather.service.WeatherSuggestionResponse;

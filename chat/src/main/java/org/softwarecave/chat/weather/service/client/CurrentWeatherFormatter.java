@@ -12,9 +12,9 @@ public class CurrentWeatherFormatter {
                         Latitude: %f
                         Longitude: %f
                         """,
-                weather.current().temperature_2m(), weather.current_units().temperature_2m(),
-                weather.current().rain(), weather.current_units().rain(),
-                weather.current().wind_speed_10m(), weather.current_units().wind_speed_10m(),
+                weather.current().temperature2m(), weather.currentUnits().temperature2m(),
+                weather.current().rain(), weather.currentUnits().rain(),
+                weather.current().windSpeed10m(), weather.currentUnits().windSpeed10m(),
                 latitude, longitude);
     }
 }
