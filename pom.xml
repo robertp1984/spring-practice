@@ -19,7 +19,6 @@
     <modules>
         <module>springjpa</module>
         <module>common</module>
-		<module>chat</module>
     </modules>
 
 	<distributionManagement>

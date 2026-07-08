@@ -13,7 +13,6 @@ spec:
     - hosts:
         - localhost
         - springjpa.127.0.0.1.nip.io
-        - chat.127.0.0.1.nip.io
         - authserver.127.0.0.1.nip.io
         - authserver
       secretName: ingress-tls
@@ -29,13 +28,7 @@ spec:
                 name: springjpa
                 port:
                   number: 8080
-          - path: /chat(/|$)(.*)
-            pathType: ImplementationSpecific
-            backend:
-              service:
-                name: chat
-                port:
-                  number: 8080
+
     - host: authserver.127.0.0.1.nip.io
       http:
         paths:
@@ -65,15 +58,5 @@ spec:
             backend:
               service:
                 name: springjpa
-                port:
-                  number: 8080
-    - host: chat.127.0.0.1.nip.io
-      http:
-        paths:
-          - path: /
-            pathType: Prefix
-            backend:
-              service:
-                name: chat
                 port:
                   number: 8080

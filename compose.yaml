@@ -179,21 +179,6 @@ services:
       - SPRING_KAFKA_CONSUMER_PROPERTIES_SCHEMA_REGISTRY_URL=http://schema-registry:8081
       - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=https://authserver:9000
 
-  chat:
-    build:
-      context: ./chat
-      tags:
-        - chat:0.0.1
-        - robertp22/chat:0.0.1
-    hostname: chat
-    restart: no
-    ports:
-      - "8090:8080"
-    environment:
-      - OPENAI_API_KEY=${OPENAI_API_KEY}
-      - API_NINJAS_API_KEY=${API_NINJAS_API_KEY}
-    depends_on:
-      - redis
 
   authserver:
     image: robertp22/authserver:0.0.1
@@ -202,18 +187,9 @@ services:
       - "9000:9000"
     restart: no
 
-  redis:
-    image: redis:8.8.0
-    hostname: redis
-    ports:
-      - "6379:6379"
-    volumes:
-      - data-redis:/data
-    environment:
-      - REDIS_ARGS=--requirepass redispwd --appendonly yes
-    restart: no
+
 
 
 volumes:
   data-postgres:
-  data-redis:
+
